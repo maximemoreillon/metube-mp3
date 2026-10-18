@@ -15,9 +15,10 @@
       </FormItem>
     </FormField>
     <div class="flex justify-center">
-      <Button type="submit" :disabled="pending">
+      <Button type="submit" :disabled="pending" size="lg">
         <Spinner class="animate-spin" v-if="pending" />
-        Submit
+        <MusicIcon v-else />
+        Convert to Mp3
       </Button>
     </div>
   </form>
@@ -28,6 +29,7 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { MusicIcon } from "@lucide/vue";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "vue-sonner";
 import {
