@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metube-mp3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: metube-mp3
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: metube-mp3
+    spec:
+      containers:
+        - name: metube-mp3
+          image: ${CONTAINER_IMAGE_TAGGED}
+          env:
+            - name: NUXT_METUBE_BASE_URL
+              value: http://metube.metube:8081
+          resources: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: metube-mp3
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: metube-mp3
+  ports:
+    - port: 80
+
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: metube-mp3
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: MeTube MP3
+    gethomepage.dev/icon: mdi-download
+    gethomepage.dev/group: 1P
+spec:
+  hostnames:
+    - metube-mp3.home.maximemoreillon.com
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: eg
+      namespace: envoy-gateway-system
+  rules:
+    - backendRefs:
+        - kind: Service
+          name: metube-mp3
+          port: 80
+      matches:
+        - path:
+            type: PathPrefix
+            value: /
