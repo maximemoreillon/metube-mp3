@@ -68,6 +68,7 @@ const onSubmit = form.handleSubmit(async ({ url: rawUrl }) => {
     });
 
     toast.success("Success");
+    form.resetForm();
   } catch (error: any) {
     toast.error(error.toString());
   } finally {
